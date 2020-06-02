@@ -6,11 +6,19 @@ using NRules.Fluent.Dsl;
 using NRules.RuleModel;
 using Xunit;
 using NRules.Utilities;
+using Xunit.Abstractions;
 
 namespace NRules.IntegrationTests
 {
     public class EvaluationEventTest
     {
+        private readonly ITestOutputHelper output;
+
+        public EvaluationEventTest(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         [Fact]
         public void Insert_Fact_RaisesAlphaConditionExpressionEvalEvent()
         {
@@ -63,6 +71,7 @@ namespace NRules.IntegrationTests
 
             // Now that this is a reference type, it returns null in this case
             //Assert.Equal(false, eventArgs.Result);
+            output.WriteLine("boolobj");
             Assert.Equal(null, eventArgs.Result);
 
             Assert.Same(ex.InnerException, eventArgs.Exception);
@@ -94,6 +103,7 @@ namespace NRules.IntegrationTests
             Assert.Collection(eventArgs.Arguments, x => Assert.Same(fact2, x), x => Assert.Same(fact1, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Same(fact1, x), x => Assert.Same(fact2, x));
             // Assert.Equal(false, eventArgs.Result);
+            output.WriteLine("Boolobj");
             Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
             Assert.Null(eventArgs.Exception);
         }
@@ -183,6 +193,7 @@ namespace NRules.IntegrationTests
             Assert.Collection(eventArgs.Arguments, x => Assert.Equal(6, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Equal(fact1, x), x => Assert.Equal("123456", x), x => Assert.Equal(6, x));
             // Assert.Equal(false, eventArgs.Result);
+            output.WriteLine("boolobj");
             Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
             Assert.Null(eventArgs.Exception);
             Assert.Equal("Test Rule", eventArgs.Rule.Name);

@@ -11,6 +11,7 @@ namespace NRules.Utilities
         public static BoolObj GetBoolObj(bool value)
         {
             BoolObj boolObj = null;
+            System.Diagnostics.Debug.WriteLine("boolobj");
 
             // Pool needs to be locked since it can be accessed by multiple threads
             lock (PoolLock)
