@@ -182,6 +182,7 @@ namespace NRules.IntegrationTests
             var eventArgs = handledEvents[0];
             Assert.Collection(eventArgs.Arguments, x => Assert.Equal(6, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Equal(fact1, x), x => Assert.Equal("123456", x), x => Assert.Equal(6, x));
+            // Assert.Equal(false, eventArgs.Result);
             Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
             Assert.Null(eventArgs.Exception);
             Assert.Equal("Test Rule", eventArgs.Rule.Name);

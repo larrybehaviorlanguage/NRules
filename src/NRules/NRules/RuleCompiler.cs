@@ -100,14 +100,14 @@ namespace NRules
 
         private IRuleFilter CompileFilters(IRuleDefinition ruleDefinition, List<Declaration> ruleDeclarations, IndexMap tupleFactMap)
         {
-            var conditions = new List<IActivationExpression<bool>>();
+            var conditions = new List<IActivationExpression<BoolObj>>();
             var keySelectors = new List<IActivationExpression<object>>();
             foreach (var filter in ruleDefinition.FilterGroup.Filters)
             {
                 switch (filter.FilterType)
                 {
                     case FilterType.Predicate:
-                        var condition = ExpressionCompiler.CompileActivationExpression<bool>(filter, ruleDeclarations, tupleFactMap);
+                        var condition = ExpressionCompiler.CompileActivationExpression<BoolObj>(filter, ruleDeclarations, tupleFactMap);
                         conditions.Add(condition);
                         break;
                     case FilterType.KeyChange:

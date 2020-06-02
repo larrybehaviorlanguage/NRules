@@ -17,6 +17,7 @@ namespace NRules.Utilities
         private static readonly PropertyInfo CurrentProperty;
         private static readonly PropertyInfo FactValueProperty;
         private static readonly MethodInfo ResolveMethod;
+        private static readonly MethodInfo ConvertBoolObjMethod;
 
         static ExpressionOptimizer()
         {
@@ -30,6 +31,8 @@ namespace NRules.Utilities
                 .GetDeclaredProperty(nameof(Fact.Object));
             ResolveMethod = typeof(IDependencyResolver).GetTypeInfo()
                 .GetDeclaredMethod(nameof(IDependencyResolver.Resolve));
+            ConvertBoolObjMethod = typeof(BoolObj).GetTypeInfo()
+                .GetDeclaredMethod(nameof(BoolObj.GetBoolObj));
         }
 
         public static Expression<TDelegate> Optimize<TDelegate>(LambdaExpression expression,
@@ -158,6 +161,20 @@ namespace NRules.Utilities
             var returnType = delegateType.GetTypeInfo().GetDeclaredMethod(nameof(Action.Invoke)).ReturnType;
             if (returnType == typeof(void)) return expression;
             if (expression.Type == returnType) return expression;
+
+            if (returnType == typeof(BoolObj))
+            {
+                if (expression.Type == typeof(bool))
+                {
+                    return Expression.Call(ConvertBoolObjMethod, expression);
+                }
+                else
+                {
+                    var boolConvertedExpression = Expression.Convert(expression, typeof(bool));
+                    return Expression.Call(ConvertBoolObjMethod, boolConvertedExpression);
+                }
+            }
+
             var convertedExpression = Expression.Convert(expression, returnType);
             return convertedExpression;
         }

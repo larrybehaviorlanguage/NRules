@@ -176,10 +176,10 @@ namespace NRules.Rete
                     ExpressionElementComparer.AreEqual(x.ExpressionElements, expressionElements));
             if (node == null)
             {
-                var compiledExpressions = new List<ILhsExpression<bool>>(expressionElements.Count);
+                var compiledExpressions = new List<ILhsExpression<BoolObj>>(expressionElements.Count);
                 foreach (var expressionElement in expressionElements)
                 {
-                    var compiledExpression = ExpressionCompiler.CompileLhsExpression<bool>(expressionElement, context.Declarations);
+                    var compiledExpression = ExpressionCompiler.CompileLhsExpression<BoolObj>(expressionElement, context.Declarations);
                     compiledExpressions.Add(compiledExpression);
                 }
                 node = new JoinNode(context.BetaSource, context.AlphaSource, expressionElements, compiledExpressions, context.HasSubnet);
@@ -289,7 +289,7 @@ namespace NRules.Rete
 
             if (node == null)
             {
-                var compiledExpression = ExpressionCompiler.CompileLhsFactExpression<bool>(element);
+                var compiledExpression = ExpressionCompiler.CompileLhsFactExpression<BoolObj>(element);
                 node = new SelectionNode(element, compiledExpression);
                 context.CurrentAlphaNode.ChildNodes.Add(node);
             }
