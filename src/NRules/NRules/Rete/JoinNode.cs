@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using NRules.RuleModel;
+using NRules.Utilities;
 
 namespace NRules.Rete
 {
     internal class JoinNode : BinaryBetaNode
     {
         private readonly List<ExpressionElement> _expressionElements;
-        private readonly List<ILhsExpression<bool>> _compiledExpressions;
+        private readonly List<ILhsExpression<BoolObj>> _compiledExpressions;
         private readonly bool _isSubnetJoin;
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -15,7 +16,7 @@ namespace NRules.Rete
 
         public JoinNode(ITupleSource leftSource, IObjectSource rightSource,
             List<ExpressionElement> expressionElements,
-            List<ILhsExpression<bool>> compiledExpressions,
+            List<ILhsExpression<BoolObj>> compiledExpressions,
             bool isSubnetJoin)
             : base(leftSource, rightSource)
         {
@@ -124,7 +125,7 @@ namespace NRules.Rete
             {
                 foreach (var expression in _compiledExpressions)
                 {
-                    if (!expression.Invoke(context, NodeInfo, left, right))
+                    if (!expression.Invoke(context, NodeInfo, left, right).GetValueAndReturnToPool())
                         return false;
                 }
                 return true;

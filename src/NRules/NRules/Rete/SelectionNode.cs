@@ -1,14 +1,15 @@
 ﻿using NRules.RuleModel;
+using NRules.Utilities;
 
 namespace NRules.Rete
 {
     internal class SelectionNode : AlphaNode
     {
-        private readonly ILhsFactExpression<bool> _compiledExpression;
+        private readonly ILhsFactExpression<BoolObj> _compiledExpression;
 
         public ExpressionElement ExpressionElement { get; }
 
-        public SelectionNode(ExpressionElement expressionElement, ILhsFactExpression<bool> compiledExpression)
+        public SelectionNode(ExpressionElement expressionElement, ILhsFactExpression<BoolObj> compiledExpression)
         {
             ExpressionElement = expressionElement;
             _compiledExpression = compiledExpression;
@@ -18,7 +19,7 @@ namespace NRules.Rete
         {
             try
             {
-                return _compiledExpression.Invoke(context, NodeInfo, fact);
+                return _compiledExpression.Invoke(context, NodeInfo, fact).GetValueAndReturnToPool();
             }
             catch (ExpressionEvaluationException e)
             {
