@@ -1,17 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 namespace NRules.Utilities
 {
     public class BoolObj
     {
+        private static int IDCtr = 0;
         private readonly static Stack<BoolObj> Pool = new Stack<BoolObj>();
 
         private readonly static object PoolLock = new object();
 
+        private static readonly StringBuilder diagnosticBuilder = new StringBuilder("\n\nBoolObjDiagnostic");
+        public static string Diagnostic => diagnosticBuilder.ToString();
+
+        private readonly int ID;
+
+        public static void ClearDiagnostic()
+        {
+            diagnosticBuilder.Clear();
+        }
 
         public static BoolObj GetBoolObj(bool value)
         {
             BoolObj boolObj = null;
-            System.Diagnostics.Debug.WriteLine("boolobj");
 
             // Pool needs to be locked since it can be accessed by multiple threads
             lock (PoolLock)
@@ -19,6 +29,7 @@ namespace NRules.Utilities
                 if (Pool.Count > 0)
                 {
                     boolObj = Pool.Pop();
+                    diagnosticBuilder.AppendLine("\nPop BoolObj " + boolObj.ID);
                 }
             }
 
@@ -26,16 +37,22 @@ namespace NRules.Utilities
             {
 
                 boolObj = new BoolObj();
+                diagnosticBuilder.AppendLine("\nConstruct BoolObj " + boolObj.ID);
             }
 
+
             boolObj.value = value;
+
+            diagnosticBuilder.AppendLine("GetBoolObj " + boolObj);
 
             return boolObj;
         }
 
         private bool value;
 
-        private BoolObj() { }
+        private BoolObj() {
+            this.ID = IDCtr++;
+        }
 
         public bool GetValueAndReturnToPool()
         {
@@ -46,6 +63,7 @@ namespace NRules.Utilities
             lock (PoolLock)
             {
                 Pool.Push(this);
+                diagnosticBuilder.AppendLine("Push BoolObj " + this + " and return value " + valueToReturn);
             }
 
             return valueToReturn;
@@ -53,7 +71,7 @@ namespace NRules.Utilities
 
         public override string ToString()
         {
-            return "BoolObj: " + value;
+            return string.Format("BoolObj [ID {0}] [Value {1}]", ID, value);
         }
     }
 }

@@ -71,7 +71,6 @@ namespace NRules.IntegrationTests
 
             // Now that this is a reference type, it returns null in this case
             //Assert.Equal(false, eventArgs.Result);
-            output.WriteLine("boolobj");
             Assert.Equal(null, eventArgs.Result);
 
             Assert.Same(ex.InnerException, eventArgs.Exception);
@@ -103,8 +102,10 @@ namespace NRules.IntegrationTests
             Assert.Collection(eventArgs.Arguments, x => Assert.Same(fact2, x), x => Assert.Same(fact1, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Same(fact1, x), x => Assert.Same(fact2, x));
             // Assert.Equal(false, eventArgs.Result);
-            output.WriteLine("Boolobj");
+            output.WriteLine(BoolObj.Diagnostic);
+            BoolObj.ClearDiagnostic();
             Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
+            output.WriteLine(BoolObj.Diagnostic);
             Assert.Null(eventArgs.Exception);
         }
         
@@ -193,8 +194,10 @@ namespace NRules.IntegrationTests
             Assert.Collection(eventArgs.Arguments, x => Assert.Equal(6, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Equal(fact1, x), x => Assert.Equal("123456", x), x => Assert.Equal(6, x));
             // Assert.Equal(false, eventArgs.Result);
-            output.WriteLine("boolobj");
+            output.WriteLine(BoolObj.Diagnostic);
+            BoolObj.ClearDiagnostic();
             Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
+            output.WriteLine(BoolObj.Diagnostic);
             Assert.Null(eventArgs.Exception);
             Assert.Equal("Test Rule", eventArgs.Rule.Name);
         }
