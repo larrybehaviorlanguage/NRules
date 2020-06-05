@@ -1,5 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿// Comment in and set a DiagnosticLogPath to enable diagnostic logging
+// #define BOOL_OBJ_DIAGNOSTIC
+
+using System.Collections.Generic;
+using System.IO;
+using System;
+using System.Diagnostics;
+
+
 namespace NRules.Utilities
 {
     public class BoolObj
@@ -9,17 +16,38 @@ namespace NRules.Utilities
 
         private readonly static object PoolLock = new object();
 
-        private static readonly StringBuilder diagnosticBuilder = new StringBuilder("\n\nBoolObjDiagnostic");
-        public static string Diagnostic => diagnosticBuilder.ToString();
+        // To use diagnostic log, enable the #define BOOL_OBJ_DIAGNOSTIC above, and provide a log path
+        private readonly static object LogFileLock = new object();
+        private readonly static string DiagnosticLogPath = "";
+        private readonly static StreamWriter diagnosticWriter;
 
         private readonly int ID;
 
-        public static void ClearDiagnostic()
+        static BoolObj()
         {
-            diagnosticBuilder.Clear();
+#if BOOL_OBJ_DIAGNOSTIC
+            lock (LogFileLock)
+            {
+                if (!string.IsNullOrEmpty(DiagnosticLogPath))
+                {
+                    diagnosticWriter = File.AppendText(DiagnosticLogPath);
+                }
+                DiagnosticLog("BoolObj Static constructor");
+            }
+#endif
         }
 
-        public static BoolObj GetBoolObj(bool value)
+        [Conditional("BOOL_OBJ_DIAGNOSTIC")]
+        public static void DiagnosticLog(string msg)
+        {
+            lock (LogFileLock)
+            {
+                diagnosticWriter?.WriteLine("[" + DateTime.Now.ToString("mm:ss:sss") + "] " + msg);
+                diagnosticWriter?.Flush();
+            }
+        }
+
+        public static BoolObj GetBoolObj(bool Value)
         {
             BoolObj boolObj = null;
 
@@ -29,26 +57,30 @@ namespace NRules.Utilities
                 if (Pool.Count > 0)
                 {
                     boolObj = Pool.Pop();
-                    diagnosticBuilder.AppendLine("\nPop BoolObj " + boolObj.ID);
+                    boolObj.inPool = false;
                 }
             }
 
             if (boolObj == null)
             {
-
                 boolObj = new BoolObj();
-                diagnosticBuilder.AppendLine("\nConstruct BoolObj " + boolObj.ID);
+                DiagnosticLog("\nConstruct BoolObj " + boolObj.ID);
+            }
+            else
+            {
+                DiagnosticLog("Pop BoolObj " + boolObj.ID);
             }
 
 
-            boolObj.value = value;
+            boolObj.Value = Value;
 
-            diagnosticBuilder.AppendLine("GetBoolObj " + boolObj);
+            DiagnosticLog("GetBoolObj " + boolObj);
 
             return boolObj;
         }
 
-        private bool value;
+        public bool Value { get; set; }
+        private volatile bool inPool;
 
         private BoolObj() {
             this.ID = IDCtr++;
@@ -56,22 +88,30 @@ namespace NRules.Utilities
 
         public bool GetValueAndReturnToPool()
         {
-            // Cache the value to prevent concurrent alteration after returning to the pool
-            bool valueToReturn = value;
+            // Cache the Value to prevent concurrent alteration after returning to the pool
+            bool ValueToReturn = Value;
+
+            if (inPool)
+            {
+                DiagnosticLog("BoolObj Value accessed while in pool: " + this);
+                throw new InvalidOperationException("BoolObjValue accessed while in pool " + this);
+            }
 
             // Pool needs to be locked since it can be accessed by multiple threads
             lock (PoolLock)
             {
                 Pool.Push(this);
-                diagnosticBuilder.AppendLine("Push BoolObj " + this + " and return value " + valueToReturn);
+                inPool = true;
             }
 
-            return valueToReturn;
+            DiagnosticLog("Push BoolObj " + this + " and return Value " + ValueToReturn);
+
+            return ValueToReturn;
         }
 
         public override string ToString()
         {
-            return string.Format("BoolObj [ID {0}] [Value {1}]", ID, value);
+            return string.Format("BoolObj [ID {0}] [Value {1}]", ID, Value);
         }
     }
 }

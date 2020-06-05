@@ -42,7 +42,21 @@ namespace NRules.AgendaFilters
             finally
             {
                 if (context.EventAggregator.TraceEnabled)
-                    context.EventAggregator.RaiseAgendaExpressionEvaluated(context.Session, exception, _expression, _argumentMap, result, activation);
+                {
+                    object eventResult;
+
+                    // Extract the bool result out of BoolObj results since these
+                    // to prevent accessing the event results after the BoolObj has been returned to the pool
+                    if (result is BoolObj boolObj)
+                    {
+                        eventResult = boolObj.Value;
+                    }
+                    else
+                    {
+                        eventResult = result;
+                    }
+                    context.EventAggregator.RaiseAgendaExpressionEvaluated(context.Session, exception, _expression, _argumentMap, eventResult, activation);
+                }
             }
         }
     }

@@ -12,13 +12,6 @@ namespace NRules.IntegrationTests
 {
     public class EvaluationEventTest
     {
-        private readonly ITestOutputHelper output;
-
-        public EvaluationEventTest(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-
         [Fact]
         public void Insert_Fact_RaisesAlphaConditionExpressionEvalEvent()
         {
@@ -42,8 +35,7 @@ namespace NRules.IntegrationTests
             var eventArgs = handledEvents[0];
             Assert.Collection(eventArgs.Arguments, x => Assert.Same(fact1, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Same(fact1, x));
-            //Assert.Equal(true, eventArgs.Result);
-            Assert.Equal(true, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
+            Assert.Equal(true, eventArgs.Result);
             Assert.Null(eventArgs.Exception);
         }
         
@@ -101,11 +93,7 @@ namespace NRules.IntegrationTests
             var eventArgs = handledEvents[1];
             Assert.Collection(eventArgs.Arguments, x => Assert.Same(fact2, x), x => Assert.Same(fact1, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Same(fact1, x), x => Assert.Same(fact2, x));
-            // Assert.Equal(false, eventArgs.Result);
-            output.WriteLine(BoolObj.Diagnostic);
-            BoolObj.ClearDiagnostic();
-            Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
-            output.WriteLine(BoolObj.Diagnostic);
+            Assert.Equal(false, eventArgs.Result);
             Assert.Null(eventArgs.Exception);
         }
         
@@ -193,11 +181,7 @@ namespace NRules.IntegrationTests
             var eventArgs = handledEvents[0];
             Assert.Collection(eventArgs.Arguments, x => Assert.Equal(6, x));
             Assert.Collection(eventArgs.Facts.Select(x => x.Value), x => Assert.Equal(fact1, x), x => Assert.Equal("123456", x), x => Assert.Equal(6, x));
-            // Assert.Equal(false, eventArgs.Result);
-            output.WriteLine(BoolObj.Diagnostic);
-            BoolObj.ClearDiagnostic();
-            Assert.Equal(false, ((BoolObj)eventArgs.Result).GetValueAndReturnToPool());
-            output.WriteLine(BoolObj.Diagnostic);
+            Assert.Equal(false, eventArgs.Result);
             Assert.Null(eventArgs.Exception);
             Assert.Equal("Test Rule", eventArgs.Rule.Name);
         }

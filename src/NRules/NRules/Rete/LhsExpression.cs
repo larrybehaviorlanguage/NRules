@@ -51,7 +51,21 @@ namespace NRules.Rete
             finally
             {
                 if (context.EventAggregator.TraceEnabled)
-                    context.EventAggregator.RaiseLhsExpressionEvaluated(context.Session, exception, _expression, _argumentMap, result, tuple, fact, nodeInfo);
+                {
+                    object eventResult;
+
+                    // Extract the bool result out of BoolObj results since these
+                    // to prevent accessing the event results after the BoolObj has been returned to the pool
+                    if (result is BoolObj boolObj)
+                    {
+                        eventResult = boolObj.Value;
+                    }
+                    else
+                    {
+                        eventResult = result;
+                    }
+                    context.EventAggregator.RaiseLhsExpressionEvaluated(context.Session, exception, _expression, _argumentMap, eventResult, tuple, fact, nodeInfo);
+                }
             }
         }
     }
@@ -93,7 +107,18 @@ namespace NRules.Rete
             finally
             {
                 if (context.EventAggregator.TraceEnabled)
-                    context.EventAggregator.RaiseLhsExpressionEvaluated(context.Session, exception, _expression, _argumentMap, result, tuple, fact, nodeInfo);
+                {
+                    object eventResult;
+                    if (result is BoolObj boolObj)
+                    {
+                        eventResult = boolObj.Value;
+                    }
+                    else
+                    {
+                        eventResult = result;
+                    }
+                    context.EventAggregator.RaiseLhsExpressionEvaluated(context.Session, exception, _expression, _argumentMap, eventResult, tuple, fact, nodeInfo);
+                }
             }
         }
     }
@@ -135,7 +160,18 @@ namespace NRules.Rete
             finally
             {
                 if (context.EventAggregator.TraceEnabled)
-                    context.EventAggregator.RaiseLhsExpressionEvaluated(context.Session, exception, _expression, _argumentMap, result, tuple, fact, nodeInfo);
+                {
+                    object eventResult;
+                    if (result is BoolObj boolObj)
+                    {
+                        eventResult = boolObj.Value;
+                    }
+                    else
+                    {
+                        eventResult = result;
+                    }
+                    context.EventAggregator.RaiseLhsExpressionEvaluated(context.Session, exception, _expression, _argumentMap, eventResult, tuple, fact, nodeInfo);
+                }
             }
         }
     }
