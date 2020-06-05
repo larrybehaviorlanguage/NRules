@@ -2,10 +2,12 @@
 // #define BOOL_OBJ_DIAGNOSTIC
 
 using System.Collections.Generic;
-using System.IO;
 using System;
 using System.Diagnostics;
 
+#if BOOL_OBJ_DIAGNOSTIC
+using System.IO;
+#endif // BOOL_OBJ_DIAGNOSTIC
 
 namespace NRules.Utilities
 {
@@ -21,9 +23,9 @@ namespace NRules.Utilities
 #if BOOL_OBJ_DIAGNOSTIC
 
         // To use diagnostic log, enable the #define BOOL_OBJ_DIAGNOSTIC above, and provide a log path
-        private readonly static object LogFileLock = new object();
         private readonly static string DiagnosticLogPath;
         private readonly static StreamWriter diagnosticWriter;
+        private readonly static object LogFileLock = new object();
 
 
         static BoolObj()
