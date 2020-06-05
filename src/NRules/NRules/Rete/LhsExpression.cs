@@ -109,6 +109,9 @@ namespace NRules.Rete
                 if (context.EventAggregator.TraceEnabled)
                 {
                     object eventResult;
+
+                    // Extract the bool result out of BoolObj results since these
+                    // to prevent accessing the event results after the BoolObj has been returned to the pool
                     if (result is BoolObj boolObj)
                     {
                         eventResult = boolObj.Value;
@@ -162,6 +165,9 @@ namespace NRules.Rete
                 if (context.EventAggregator.TraceEnabled)
                 {
                     object eventResult;
+
+                    // Extract the bool result out of BoolObj results since these
+                    // to prevent accessing the event results after the BoolObj has been returned to the pool
                     if (result is BoolObj boolObj)
                     {
                         eventResult = boolObj.Value;
