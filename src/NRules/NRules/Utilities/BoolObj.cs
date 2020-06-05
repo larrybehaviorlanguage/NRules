@@ -16,16 +16,18 @@ namespace NRules.Utilities
 
         private readonly static object PoolLock = new object();
 
+        private readonly int ID;
+
+#if BOOL_OBJ_DIAGNOSTIC
+
         // To use diagnostic log, enable the #define BOOL_OBJ_DIAGNOSTIC above, and provide a log path
         private readonly static object LogFileLock = new object();
-        private readonly static string DiagnosticLogPath = "";
+        private readonly static string DiagnosticLogPath;
         private readonly static StreamWriter diagnosticWriter;
 
-        private readonly int ID;
 
         static BoolObj()
         {
-#if BOOL_OBJ_DIAGNOSTIC
             lock (LogFileLock)
             {
                 if (!string.IsNullOrEmpty(DiagnosticLogPath))
@@ -34,17 +36,19 @@ namespace NRules.Utilities
                 }
                 DiagnosticLog("BoolObj Static constructor");
             }
-#endif
         }
+#endif // BOOL_OBJ_DIAGNOSTIC
 
         [Conditional("BOOL_OBJ_DIAGNOSTIC")]
         public static void DiagnosticLog(string msg)
         {
+#if BOOL_OBJ_DIAGNOSTIC
             lock (LogFileLock)
             {
                 diagnosticWriter?.WriteLine("[" + DateTime.Now.ToString("mm:ss:sss") + "] " + msg);
                 diagnosticWriter?.Flush();
             }
+#endif // BOOL_OBJ_DIAGNOSTIC
         }
 
         public static BoolObj GetBoolObj(bool Value)
