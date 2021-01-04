@@ -7,7 +7,6 @@ namespace NRules.Rete
 {
     internal class JoinNode : BinaryBetaNode
     {
-        private readonly List<ExpressionElement> _expressionElements;
         private readonly List<ILhsExpression<BoolObj>> _compiledExpressions;
 
         private readonly bool _isSubnetJoin;
