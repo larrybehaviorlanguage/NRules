@@ -44,6 +44,15 @@ namespace NRules
     public interface ISession
     {
         /// <summary>
+        /// Controls how the engine propagates linked facts from rules that insert/update/retract linked facts in their actions.
+        /// By default, <see cref="AutoPropagateLinkedFacts"/> is <c>true</c> and the engine automatically
+        /// propagates linked facts at the end of the rule's actions.
+        /// If <see cref="AutoPropagateLinkedFacts"/> is <c>false</c>, linked facts are queued, and have to be
+        /// explicitly propagated by calling <see cref="PropagateLinked"/> method.
+        /// </summary>
+        bool AutoPropagateLinkedFacts { get; set; }
+
+        /// <summary>
         /// Agenda, which represents a store for rule matches.
         /// </summary>
         IAgenda Agenda { get; }
@@ -68,7 +77,9 @@ namespace NRules
         /// <summary>
         /// Inserts new facts to the rules engine memory.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to insert.</param>
         /// <exception cref="ArgumentException">If any fact already exists in working memory.</exception>
         void InsertAll(IEnumerable<object> facts);
@@ -77,7 +88,9 @@ namespace NRules
         /// Inserts new facts to the rules engine memory if the facts don't exist.
         /// If any of the facts exists in the engine, none of the facts are inserted.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to insert.</param>
         /// <returns>Result of facts insertion.</returns>
         IFactResult TryInsertAll(IEnumerable<object> facts);
@@ -86,7 +99,9 @@ namespace NRules
         /// Inserts new facts to the rules engine memory if the facts don't exist.
         /// If any of the facts exists in the engine, the behavior is defined by <see cref="BatchOptions"/>.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to insert.</param>
         /// <param name="options">Options that define behavior of the batch operation.</param>
         /// <returns>Result of facts insertion.</returns>
@@ -95,7 +110,9 @@ namespace NRules
         /// <summary>
         /// Inserts new fact to the rules engine memory.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="fact">Facts to insert.</param>
         /// <exception cref="ArgumentException">If fact already exists in working memory.</exception>
         void Insert(object fact);
@@ -103,6 +120,9 @@ namespace NRules
         /// <summary>
         /// Inserts a fact to the rules engine memory if the fact does not exist.
         /// </summary>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="fact">Fact to insert.</param>
         /// <returns>Whether the fact was inserted or not.</returns>
         bool TryInsert(object fact);
@@ -110,7 +130,9 @@ namespace NRules
         /// <summary>
         /// Updates existing facts in the rules engine memory.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to update.</param>
         /// <exception cref="ArgumentException">If any fact does not exist in working memory.</exception>
         void UpdateAll(IEnumerable<object> facts);
@@ -119,7 +141,9 @@ namespace NRules
         /// Updates existing facts in the rules engine memory if the facts exist.
         /// If any of the facts don't exist in the engine, none of the facts are updated.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to update.</param>
         /// <returns>Result of facts update.</returns>
         IFactResult TryUpdateAll(IEnumerable<object> facts);
@@ -128,7 +152,9 @@ namespace NRules
         /// Updates existing facts in the rules engine memory if the facts exist.
         /// If any of the facts don't exist in the engine, the behavior is defined by <see cref="BatchOptions"/>.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to update.</param>
         /// <param name="options">Options that define behavior of the batch operation.</param>
         /// <returns>Result of facts update.</returns>
@@ -137,7 +163,9 @@ namespace NRules
         /// <summary>
         /// Updates existing fact in the rules engine memory.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="fact">Fact to update.</param>
         /// <exception cref="ArgumentException">If fact does not exist in working memory.</exception>
         void Update(object fact);
@@ -145,7 +173,9 @@ namespace NRules
         /// <summary>
         /// Updates a fact in the rules engine memory if the fact exists.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="fact">Fact to update.</param>
         /// <returns>Whether the fact was updated or not.</returns>
         bool TryUpdate(object fact);
@@ -153,7 +183,9 @@ namespace NRules
         /// <summary>
         /// Removes existing facts from the rules engine memory.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to remove.</param>
         /// <exception cref="ArgumentException">If any fact does not exist in working memory.</exception>
         void RetractAll(IEnumerable<object> facts);
@@ -162,7 +194,9 @@ namespace NRules
         /// Removes existing facts from the rules engine memory if the facts exist.
         /// If any of the facts don't exist in the engine, none of the facts are removed.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to remove.</param>
         /// <returns>Result of facts removal.</returns>
         IFactResult TryRetractAll(IEnumerable<object> facts);
@@ -171,7 +205,9 @@ namespace NRules
         /// Removes existing facts from the rules engine memory if the facts exist.
         /// If any of the facts don't exist in the engine, the behavior is defined by <see cref="BatchOptions"/>.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Facts to remove.</param>
         /// <param name="options">Options that define behavior of the batch operation.</param>
         /// <returns>Result of facts removal.</returns>
@@ -180,7 +216,9 @@ namespace NRules
         /// <summary>
         /// Removes existing fact from the rules engine memory.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="fact">Fact to remove.</param>
         /// <exception cref="ArgumentException">If fact does not exist in working memory.</exception>
         void Retract(object fact);
@@ -188,10 +226,25 @@ namespace NRules
         /// <summary>
         /// Removes a fact from the rules engine memory if the fact exists.
         /// </summary>
-        /// <remarks>Bulk session operations are more performant than individual operations on a set of facts.</remarks>
+        /// <remarks>
+        /// Bulk session operations are more performant than individual operations on a set of facts.
+        /// </remarks>
         /// <param name="facts">Fact to remove.</param>
         /// <returns>Whether the fact was retracted or not.</returns>
         bool TryRetract(object facts);
+
+        /// <summary>
+        /// Propagates all queued linked facts.
+        /// </summary>
+        /// <returns>Collection of propagated sets of linked facts.</returns>
+        IEnumerable<ILinkedFactSet> PropagateLinked();
+
+        /// <summary>
+        /// Starts rules execution cycle.
+        /// This method blocks until there are no more rules to fire.
+        /// </summary>
+        /// <returns>Number of rules that fired.</returns>
+        int Fire();
 
         /// <summary>
         /// Starts rules execution cycle.
@@ -199,7 +252,15 @@ namespace NRules
         /// </summary>
         /// <param name="cancellationToken">Enables cooperative cancellation of the rules execution cycle.</param>
         /// <returns>Number of rules that fired.</returns>
-        int Fire(CancellationToken cancellationToken = default(CancellationToken));
+        int Fire(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Starts rules execution cycle.
+        /// This method blocks until maximum number of rules fired or there are no more rules to fire.
+        /// </summary>
+        /// <param name="maxRulesNumber">Maximum number of rules to fire.</param>
+        /// <returns>Number of rules that fired.</returns>
+        int Fire(int maxRulesNumber);
 
         /// <summary>
         /// Starts rules execution cycle.
@@ -208,7 +269,7 @@ namespace NRules
         /// <param name="maxRulesNumber">Maximum number of rules to fire.</param>
         /// <param name="cancellationToken">Enables cooperative cancellation of the rules execution cycle.</param>
         /// <returns>Number of rules that fired.</returns>
-        int Fire(int maxRulesNumber, CancellationToken cancellationToken = default(CancellationToken));
+        int Fire(int maxRulesNumber, CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a LINQ query to retrieve facts of a given type from the rules engine's memory.
@@ -224,9 +285,10 @@ namespace NRules
 
         IEnumerable<object> GetLinkedKeys(Activation activation);
         object GetLinked(Activation activation, object key);
-        void InsertLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts);
-        void UpdateLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts);
-        void RetractLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts);
+        void QueueInsertLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts);
+        void QueueUpdateLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts);
+        void QueueRetractLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts);
+        void QueueRetractLinked(Activation activation);
     }
 
     /// <summary>
@@ -234,12 +296,15 @@ namespace NRules
     /// </summary>
     public sealed class Session : ISessionInternal, ISessionSnapshotProvider
     {
+        private static readonly ILinkedFactSet[] EmptyLinkedFactResult = new ILinkedFactSet[0];
+
         private readonly IAgendaInternal _agenda;
         private readonly INetwork _network;
         private readonly IWorkingMemory _workingMemory;
         private readonly IEventAggregator _eventAggregator;
         private readonly IActionExecutor _actionExecutor;
         private readonly IExecutionContext _executionContext;
+        private readonly Queue<LinkedFactSet> _linkedFacts = new Queue<LinkedFactSet>();
 
         internal Session(
             INetwork network,
@@ -259,8 +324,10 @@ namespace NRules
             _executionContext = new ExecutionContext(this, _workingMemory, _agenda, _eventAggregator, idGenerator);
             DependencyResolver = dependencyResolver;
             ActionInterceptor = actionInterceptor;
+            AutoPropagateLinkedFacts = true;
         }
 
+        public bool AutoPropagateLinkedFacts { get; set; }
         public IAgenda Agenda => _agenda;
         public IEventProvider Events => _eventAggregator;
         public IDependencyResolver DependencyResolver { get; set; }
@@ -320,7 +387,7 @@ namespace NRules
 
                 _network.PropagateAssert(_executionContext, toPropagate);
 
-                UnlinkFacts();
+                PropagateLinked();
             }
             return result;
         }
@@ -383,7 +450,7 @@ namespace NRules
 
                 _network.PropagateUpdate(_executionContext, toPropagate);
 
-                UnlinkFacts();
+                PropagateLinked();
             }
             return result;
         }
@@ -445,7 +512,7 @@ namespace NRules
                     _workingMemory.RemoveFact(fact);
                 }
 
-                UnlinkFacts();
+                PropagateLinked();
             }
             return result;
         }
@@ -461,6 +528,39 @@ namespace NRules
             return result.FailedCount == 0;
         }
 
+        public IEnumerable<ILinkedFactSet> PropagateLinked()
+        {
+            if (_linkedFacts.Count == 0)
+                return EmptyLinkedFactResult;
+
+            var factSets = new List<ILinkedFactSet>(_linkedFacts.Count);
+            while (_linkedFacts.Count > 0)
+            {
+                var item = _linkedFacts.Dequeue();
+                factSets.Add(item);
+                switch (item.Action)
+                {
+                    case LinkedFactAction.Insert:
+                        _network.PropagateAssert(_executionContext, item.Facts);
+                        break;
+                    case LinkedFactAction.Update:
+                        _network.PropagateUpdate(_executionContext, item.Facts);
+                        break;
+                    case LinkedFactAction.Retract:
+                        _network.PropagateRetract(_executionContext, item.Facts);
+                        foreach (var fact in item.Facts)
+                        {
+                            _workingMemory.RemoveFact(fact);
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException($"Unrecognized linked fact action. Action={item.Action}");
+                }
+            }
+
+            return factSets;
+        }
+
         public IEnumerable<object> GetLinkedKeys(Activation activation)
         {
             var keys = _workingMemory.GetLinkedKeys(activation);
@@ -473,7 +573,7 @@ namespace NRules
             return factWrapper?.Object;
         }
 
-        public void InsertLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts)
+        public void QueueInsertLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts)
         {
             var toAdd = new List<Tuple<object, Fact>>();
             var toPropagate = new List<Fact>();
@@ -494,10 +594,17 @@ namespace NRules
             {
                 _workingMemory.AddLinkedFact(activation, item.Item1, item.Item2);
             }
-            _network.PropagateAssert(_executionContext, toPropagate);
+
+            LinkedFactSet current;
+            if (_linkedFacts.Count == 0 || (current = _linkedFacts.Peek()).Action != LinkedFactAction.Insert)
+            {
+                current = new LinkedFactSet(LinkedFactAction.Insert);
+                _linkedFacts.Enqueue(current);
+            }
+            current.Facts.AddRange(toPropagate);
         }
 
-        public void UpdateLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts)
+        public void QueueUpdateLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts)
         {
             var toUpdate = new List<Tuple<object, Fact, object>>();
             var toPropagate = new List<Fact>();
@@ -517,10 +624,17 @@ namespace NRules
             {
                 _workingMemory.UpdateLinkedFact(activation, item.Item1, item.Item2, item.Item3);
             }
-            _network.PropagateUpdate(_executionContext, toPropagate);
+
+            LinkedFactSet current;
+            if (_linkedFacts.Count == 0 || (current = _linkedFacts.Peek()).Action != LinkedFactAction.Update)
+            {
+                current = new LinkedFactSet(LinkedFactAction.Update);
+                _linkedFacts.Enqueue(current);
+            }
+            current.Facts.AddRange(toPropagate);
         }
 
-        public void RetractLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts)
+        public void QueueRetractLinked(Activation activation, IEnumerable<KeyValuePair<object, object>> keyedFacts)
         {
             var toRemove = new List<Tuple<object, Fact>>();
             var toPropagate = new List<Fact>();
@@ -536,37 +650,49 @@ namespace NRules
                 toRemove.Add(System.Tuple.Create(key, factWrapper));
                 toPropagate.Add(factWrapper);
             }
-            _network.PropagateRetract(_executionContext, toPropagate);
             foreach (var item in toRemove)
             {
                 _workingMemory.RemoveLinkedFact(activation, item.Item1, item.Item2);
                 item.Item2.Source = null;
             }
-        }
 
-        private void UnlinkFacts()
-        {
-            var unlinkQueue = _executionContext.UnlinkQueue;
-            while (unlinkQueue.Count > 0)
+            LinkedFactSet current;
+            if (_linkedFacts.Count == 0 || (current = _linkedFacts.Peek()).Action != LinkedFactAction.Retract)
             {
-                var activation = unlinkQueue.Dequeue();
-                var linkedKeys = GetLinkedKeys(activation);
-                var keyedFacts = new List<KeyValuePair<object, object>>();
-                foreach (var key in linkedKeys)
-                {
-                    var linkedFact = GetLinked(activation, key);
-                    keyedFacts.Add(new KeyValuePair<object, object>(key, linkedFact));
-                }
-                RetractLinked(activation, keyedFacts);
+                current = new LinkedFactSet(LinkedFactAction.Retract);
+                _linkedFacts.Enqueue(current);
             }
+            current.Facts.AddRange(toPropagate);
         }
 
-        public int Fire(CancellationToken cancellationToken = default)
+        public void QueueRetractLinked(Activation activation)
+        {
+            var linkedKeys = GetLinkedKeys(activation);
+            var keyedFacts = new List<KeyValuePair<object, object>>();
+            foreach (var key in linkedKeys)
+            {
+                var linkedFact = GetLinked(activation, key);
+                keyedFacts.Add(new KeyValuePair<object, object>(key, linkedFact));
+            }
+            QueueRetractLinked(activation, keyedFacts);
+        }
+
+        public int Fire()
+        {
+            return Fire(default(CancellationToken));
+        }
+
+        public int Fire(CancellationToken cancellationToken)
         {
             return Fire(Int32.MaxValue, cancellationToken);
         }
 
-        public int Fire(int maxRulesNumber, CancellationToken cancellationToken = default)
+        public int Fire(int maxRulesNumber)
+        {
+            return Fire(maxRulesNumber, default);
+        }
+
+        public int Fire(int maxRulesNumber, CancellationToken cancellationToken)
         {
             int ruleFiredCount = 0;
             while (!_agenda.IsEmpty && ruleFiredCount < maxRulesNumber)
@@ -574,10 +700,15 @@ namespace NRules
                 Activation activation = _agenda.Pop();
                 IActionContext actionContext = new ActionContext(this, activation, cancellationToken);
 
-                _actionExecutor.Execute(_executionContext, actionContext);
-                ruleFiredCount++;
-
-                UnlinkFacts();
+                try
+                {
+                    _actionExecutor.Execute(_executionContext, actionContext);
+                }
+                finally
+                {
+                    ruleFiredCount++;
+                    if (AutoPropagateLinkedFacts) PropagateLinked();
+                }
 
                 if (actionContext.IsHalted || cancellationToken.IsCancellationRequested) break;
             }

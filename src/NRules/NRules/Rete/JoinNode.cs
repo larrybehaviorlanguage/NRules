@@ -9,18 +9,22 @@ namespace NRules.Rete
     {
         private readonly List<ExpressionElement> _expressionElements;
         private readonly List<ILhsExpression<BoolObj>> _compiledExpressions;
+
         private readonly bool _isSubnetJoin;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public IEnumerable<ExpressionElement> ExpressionElements => _expressionElements;
+        public List<Declaration> Declarations { get; }
+        public List<ExpressionElement> ExpressionElements { get; }
 
-        public JoinNode(ITupleSource leftSource, IObjectSource rightSource,
+        public JoinNode(ITupleSource leftSource,
+            IObjectSource rightSource,
+            List<Declaration> declarations,
             List<ExpressionElement> expressionElements,
             List<ILhsExpression<BoolObj>> compiledExpressions,
             bool isSubnetJoin)
-            : base(leftSource, rightSource)
+            : base(leftSource, rightSource, isSubnetJoin)
         {
-            _expressionElements = expressionElements;
+            Declarations = declarations;
+            ExpressionElements = expressionElements;
             _compiledExpressions = compiledExpressions;
             _isSubnetJoin = isSubnetJoin;
         }
@@ -30,13 +34,13 @@ namespace NRules.Rete
             var joinedSets = JoinedSets(context, tuples);
             var toAssert = new TupleFactList();
             foreach (var set in joinedSets)
-            foreach (var fact in set.Facts)
-            {
-                if (MatchesConditions(context, set.Tuple, fact))
+                foreach (var fact in set.Facts)
                 {
-                    toAssert.Add(set.Tuple, fact);
+                    if (MatchesConditions(context, set.Tuple, fact))
+                    {
+                        toAssert.Add(set.Tuple, fact);
+                    }
                 }
-            }
             MemoryNode.PropagateAssert(context, toAssert);
         }
 
@@ -48,17 +52,17 @@ namespace NRules.Rete
             var toUpdate = new TupleFactList();
             var toRetract = new TupleFactList();
             foreach (var set in joinedSets)
-            foreach (var fact in set.Facts)
-            {
-                if (MatchesConditions(context, set.Tuple, fact))
+                foreach (var fact in set.Facts)
                 {
-                    toUpdate.Add(set.Tuple, fact);
+                    if (MatchesConditions(context, set.Tuple, fact))
+                    {
+                        toUpdate.Add(set.Tuple, fact);
+                    }
+                    else
+                    {
+                        toRetract.Add(set.Tuple, fact);
+                    }
                 }
-                else
-                {
-                    toRetract.Add(set.Tuple, fact);
-                }
-            }
             MemoryNode.PropagateRetract(context, toRetract);
             MemoryNode.PropagateUpdate(context, toUpdate);
         }
@@ -68,10 +72,10 @@ namespace NRules.Rete
             var joinedSets = JoinedSets(context, tuples);
             var toRetract = new TupleFactList();
             foreach (var set in joinedSets)
-            foreach (var fact in set.Facts)
-            {
-                toRetract.Add(set.Tuple, fact);
-            }
+                foreach (var fact in set.Facts)
+                {
+                    toRetract.Add(set.Tuple, fact);
+                }
             MemoryNode.PropagateRetract(context, toRetract);
         }
 
@@ -80,13 +84,13 @@ namespace NRules.Rete
             var joinedSets = JoinedSets(context, facts);
             var toAssert = new TupleFactList();
             foreach (var set in joinedSets)
-            foreach (var fact in set.Facts)
-            {
-                if (MatchesConditions(context, set.Tuple, fact))
+                foreach (var fact in set.Facts)
                 {
-                    toAssert.Add(set.Tuple, fact);
+                    if (MatchesConditions(context, set.Tuple, fact))
+                    {
+                        toAssert.Add(set.Tuple, fact);
+                    }
                 }
-            }
             MemoryNode.PropagateAssert(context, toAssert);
         }
 
@@ -96,13 +100,13 @@ namespace NRules.Rete
             var toUpdate = new TupleFactList();
             var toRetract = new TupleFactList();
             foreach (var set in joinedSets)
-            foreach (var fact in set.Facts)
-            {
-                if (MatchesConditions(context, set.Tuple, fact))
-                    toUpdate.Add(set.Tuple, fact);
-                else
-                    toRetract.Add(set.Tuple, fact);
-            }
+                foreach (var fact in set.Facts)
+                {
+                    if (MatchesConditions(context, set.Tuple, fact))
+                        toUpdate.Add(set.Tuple, fact);
+                    else
+                        toRetract.Add(set.Tuple, fact);
+                }
             MemoryNode.PropagateRetract(context, toRetract);
             MemoryNode.PropagateUpdate(context, toUpdate);
         }
@@ -112,10 +116,10 @@ namespace NRules.Rete
             var joinedSets = JoinedSets(context, facts);
             var toRetract = new TupleFactList();
             foreach (var set in joinedSets)
-            foreach (var fact in set.Facts)
-            {
-                toRetract.Add(set.Tuple, fact);
-            }
+                foreach (var fact in set.Facts)
+                {
+                    toRetract.Add(set.Tuple, fact);
+                }
             MemoryNode.PropagateRetract(context, toRetract);
         }
 
